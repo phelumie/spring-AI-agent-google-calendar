@@ -102,7 +102,7 @@ public class CalendarTools {
         }
     }
 
-    @Tool(description = "delete a specific meeting/event. Note ID not htmlLink eid")
+    @Tool(description = "delete a specific meeting/event. Note, EVENT ID not htmlLink eid")
     public String deleteEvent(String userId, @ToolParam(description = "Meeting event ID not name") String eventId) {
         log.info("Deleting calendar event - eventId: {}", eventId);
 

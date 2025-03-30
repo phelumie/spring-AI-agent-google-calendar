@@ -1,6 +1,7 @@
 package com.ajisegiri.google_calendar.controller;
 
 import com.ajisegiri.google_calendar.service.GoogleOAuthService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 import static com.ajisegiri.google_calendar.controller.GoogleCalendarController.USER_ID;
 
+@Slf4j
 @RestController
 public class OAuthCallbackController {
 
@@ -34,6 +36,7 @@ public class OAuthCallbackController {
 
         // The state parameter contains the userId
         String userId = state;
+        log.info("Received code {} for user {}", code, userId);
 
         googleOAuthService.exchangeCodeForTokens(userId, code);
         return ResponseEntity.ok("Authorization successful!");

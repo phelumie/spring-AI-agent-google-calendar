@@ -22,6 +22,7 @@ public class GoogleCalendarService {
 
     private final GoogleOAuthService googleOAuthService;
     private static String CALENDAR_ID = "f7861edb71e65be395745ca37215d3d77c941c74e54264e41188015e2573668b@group.calendar.google.com";
+    // for personal calendar use "primary"
 
     public List<CalendarListEntry> getCalendarList(String userId) throws IOException {
         Calendar calendarService = getCalendarService(userId);
