@@ -71,8 +71,10 @@ public class CalendarTools {
     }
 
     @Tool(description = "This create/schedule calendar event.")
-    public String createEvent(String userId, @ToolParam(description = "Request body needed to create an event") CalendarEventRequest request) {
+    public String createEvent(String userId, @ToolParam(description = "Request body needed to create an event") CalendarEventRequest request,
+                              @ToolParam(description = "The IANA time zone in which time is specified", required = false) String timeZoneInIANA) {
         log.info("Creating calendar event - summary: {}", request.getSummary());
+        request.setTimeZone(timeZoneInIANA);
 
         try {
             log.debug("Event creation request details: {}", request);
@@ -87,8 +89,10 @@ public class CalendarTools {
     }
 
     @Tool(description = "This updates an existing calendar event.Note ID not htmlLink eid")
-    public String updateEvent(String userId, String eventId, @ToolParam(description = "Request body needed to uodate an event. Not Every field has to be field") CalendarEventRequest request) {
+    public String updateEvent(String userId, String eventId, @ToolParam(description = "Request body needed to update an event. Not Every field has to be field") CalendarEventRequest request
+            , @ToolParam(description = "The IANA time zone in which time is specified", required = false) String timeZoneInIANA) {
         log.info("Updating calendar event - eventId: {}, summary: {}", eventId, request.getSummary());
+        request.setTimeZone(timeZoneInIANA);
 
         try {
             log.debug("Event update details - eventId: {}, request: {}", eventId, request);
@@ -102,7 +106,7 @@ public class CalendarTools {
         }
     }
 
-    @Tool(description = "delete a specific meeting/event. Note, EVENT ID not htmlLink eid")
+    @Tool(description = "delete a specific meeting/event. Use the value of the id field. Do not extract eid or any other field. use only the id value.")
     public String deleteEvent(String userId, @ToolParam(description = "Meeting event ID not name") String eventId) {
         log.info("Deleting calendar event - eventId: {}", eventId);
 
