@@ -4,6 +4,8 @@ A sophisticated AI agent built with Spring Boot that interacts with Google Calen
 This project demonstrates how to leverage OpenAI's language models to create, update, and manage calendar events through
 conversational interfaces.
 
+> [**Read the full tutorial: Building an AI Agent to Manage Google Calendar with Spring AI**](https://dev.to/sunday_ajisegiri/building-an-ai-agent-to-manage-google-calendar-with-spring-ai-180l) — includes a working demo of the application!
+
 ## 🌟 Features
 
 - **OAuth 2.0 Authentication** - Seamless Google authentication with token refresh
