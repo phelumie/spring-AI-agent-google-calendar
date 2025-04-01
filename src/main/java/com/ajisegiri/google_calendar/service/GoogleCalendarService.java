@@ -9,10 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -81,16 +79,30 @@ public class GoogleCalendarService {
                 .setSummary(request.getSummary())
                 .setLocation(request.getLocation())
                 .setDescription(request.getDescription());
+        // Parse the local date times
+        ZoneId userZone = ZoneId.of(request.getTimeZone());
+        LocalDateTime startLocal = LocalDateTime.parse(request.getStartDateTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime endLocal = LocalDateTime.parse(request.getEndDateTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
-        // Set start and end time
+        // Convert to ZonedDateTime
+        ZonedDateTime startZoned = startLocal.atZone(userZone);
+        ZonedDateTime endZoned = endLocal.atZone(userZone);
+
+        // Create DateTime objects with ISO-8601 format that includes timezone offset
+        // We need to use a custom formatter that matches RFC3339 format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+        DateTime startDateTime = new DateTime(startZoned.format(formatter));
+        DateTime endDateTime = new DateTime(endZoned.format(formatter));
+        // Create EventDateTime objects with the formatted DateTime objects
         EventDateTime start = new EventDateTime()
-                .setDateTime(new DateTime(request.getStartDateTime()))
+                .setDateTime(startDateTime)
                 .setTimeZone(request.getTimeZone());
-        event.setStart(start);
 
         EventDateTime end = new EventDateTime()
-                .setDateTime(new DateTime(request.getEndDateTime()))
+                .setDateTime(endDateTime)
                 .setTimeZone(request.getTimeZone());
+
+        event.setStart(start);
         event.setEnd(end);
 
         // Add attendees if provided
@@ -141,22 +153,38 @@ public class GoogleCalendarService {
         }
 
         // Update start and end time if provided
-        if (request.getStartDateTime() != null) {
+        if (request.getStartDateTime() != null && request.getTimeZone() != null) {
+            ZoneId userZone = ZoneId.of(request.getTimeZone());
+            LocalDateTime startLocal = LocalDateTime.parse(request.getStartDateTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+            ZonedDateTime startZoned = startLocal.atZone(userZone);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+            DateTime startDateTime = new DateTime(startZoned.format(formatter));
+
             EventDateTime start = existingEvent.getStart();
             if (start == null) {
                 start = new EventDateTime();
             }
-            start.setDateTime(new DateTime(request.getStartDateTime()))
+            start.setDateTime(startDateTime)
                     .setTimeZone(request.getTimeZone());
             existingEvent.setStart(start);
         }
 
-        if (request.getEndDateTime() != null) {
+        if (request.getEndDateTime() != null && request.getTimeZone() != null) {
+            ZoneId userZone = ZoneId.of(request.getTimeZone());
+            LocalDateTime endLocal = LocalDateTime.parse(request.getEndDateTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+            ZonedDateTime endZoned = endLocal.atZone(userZone);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+            DateTime endDateTime = new DateTime(endZoned.format(formatter));
+
             EventDateTime end = existingEvent.getEnd();
             if (end == null) {
                 end = new EventDateTime();
             }
-            end.setDateTime(new DateTime(request.getEndDateTime()))
+            end.setDateTime(endDateTime)
                     .setTimeZone(request.getTimeZone());
             existingEvent.setEnd(end);
         }

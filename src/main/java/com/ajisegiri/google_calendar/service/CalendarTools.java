@@ -71,10 +71,8 @@ public class CalendarTools {
     }
 
     @Tool(description = "This create/schedule calendar event.")
-    public String createEvent(String userId, @ToolParam(description = "Request body needed to create an event") CalendarEventRequest request,
-                              @ToolParam(description = "The IANA time zone in which time is specified", required = false) String timeZoneInIANA) {
-        log.info("Creating calendar event - summary: {}", request.getSummary());
-        request.setTimeZone(timeZoneInIANA);
+    public String createEvent(String userId, @ToolParam(description = "Request body needed to create an event") CalendarEventRequest request) {
+        log.info("Request body needed to create an event: {}", request);
 
         try {
             log.debug("Event creation request details: {}", request);
@@ -89,10 +87,8 @@ public class CalendarTools {
     }
 
     @Tool(description = "This updates an existing calendar event.Note ID not htmlLink eid")
-    public String updateEvent(String userId, String eventId, @ToolParam(description = "Request body needed to update an event. Not Every field has to be field") CalendarEventRequest request
-            , @ToolParam(description = "The IANA time zone in which time is specified", required = false) String timeZoneInIANA) {
+    public String updateEvent(String userId, String eventId, @ToolParam(description = "Request body needed to update an event. Not Every field has to be field") CalendarEventRequest request) {
         log.info("Updating calendar event - eventId: {}, summary: {}", eventId, request.getSummary());
-        request.setTimeZone(timeZoneInIANA);
 
         try {
             log.debug("Event update details - eventId: {}, request: {}", eventId, request);

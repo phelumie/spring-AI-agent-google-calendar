@@ -23,7 +23,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
@@ -50,9 +50,9 @@ public class CalendarCustomerSupportAssistantService {
                         - Use the response data exactly as provided, even if there are duplicates event
                         - Use parallel function calling when appropriate for efficiency
                         - For calendar/event creation, always confirm the timezone before actually saving the event.
-                        - Don't manipulate/change dates/calendar unless explicitly requested by the user
+                        - Don't manipulate/change date types/calendar unless explicitly requested by the user
                         - Prioritize accuracy and precision in all interactions
-                        - Always work with the user's timezone. Current timestamp is {current_date}
+                        - Always work with the user's timezone. Current date is {current_date}
                         """)
                 .defaultAdvisors(
                         new PromptChatMemoryAdvisor(chatMemory), // Chat Memory
@@ -66,7 +66,7 @@ public class CalendarCustomerSupportAssistantService {
         log.info("Chat ID: " + chatId);
         log.info("User Message: " + userMessageContent);
         return this.chatClient.prompt()
-                .system(s -> s.param("current_date", OffsetDateTime.now().toString()))
+                .system(s -> s.param("current_date", LocalDate.now()))
                 .system(s -> s.param("user", "Sunday Ajisegiri"))
                 .system(s -> s.param("user_id", userId))
                 .user(userMessageContent)
